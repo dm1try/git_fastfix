@@ -6,7 +6,7 @@ local eq = helpers.eq
 
 describe('git_fastfix', function()
  local screen
- local screen_width = 80
+ local screen_width = 100
 
  local plugin_dir = os.getenv("TEST_FILE"):match("(.*)/spec")
  local spec_dir = plugin_dir .. "/spec"
@@ -46,31 +46,31 @@ describe('git_fastfix', function()
 
  local function expect_git_patch_window()
    screen:expect([[
-diff --git a/second_commit.txt b/second_commit.txt                              |
-index e019be0..9dd24c0 100644                                                   |
---- a/second_commit.txt                                                         |
-+++ b/second_commit.txt                                                         |
-@@ -1 +1 @@                                                                     |
--second                                                                         |
-+updated second                                                                 |
-Stage this hunk [y,n,q,a,d,e,?]?                                                |
-                                                                                |
--- TERMINAL --                                                                  |
+updateddiff --git a/second_commit.txt b/second_commit.txt                                           |
+~      index e019be0..9dd24c0 100644                                                                |
+~      --- a/second_commit.txt                                                                      |
+~      +++ b/second_commit.txt                                                                      |
+~      @@ -1 +1 @@                                                                                  |
+~      -second                                                                                      |
+~      +updated second                                                                              |
+~      Stage this hunk [y,n,q,a,d,e,?]?                                                             |
+~                                                                                                   |
+-- TERMINAL --                                                                                      |
    ]])
  end
 
  local function expect_git_log_window()
    screen:expect([[
-updated^c9a08ee third commit                                                     |
-~      cd7e3cf second commit                                                    |
-~      f3f7b0a first commit                                                     |
-~                                                                               |
-~                                                                               |
-~                                                                               |
-~                                                                               |
-~                                                                               |
-~                                                                               |
-                                                                                |
+updated^c9a08ee third commit                                                                         |
+~      cd7e3cf second commit                                                                        |
+~      f3f7b0a first commit                                                                         |
+~                                                                                                   |
+~                                                                                                   |
+~                                                                                                   |
+~                                                                                                   |
+~                                                                                                   |
+~                                                                                                   |
+                                                                                                    |
    ]])
  end
 
@@ -80,16 +80,16 @@ updated^c9a08ee third commit                                                    
 
  local function expect_notification_about_applied_patch()
   screen:expect([[
-updated^ second                                                                  |
-~                                                                               |
-~                                                                               |
-~                                                                               |
-~                                                                               |
-~                                                                               |
-~                                                                               |
-~                                                                               |
-~                                                                               |
-Patch applied to cd7e3cf second commit                                          |
+updated^ second                                                                                      |
+~                                                                                                   |
+~                                                                                                   |
+~                                                                                                   |
+~                                                                                                   |
+~                                                                                                   |
+~                                                                                                   |
+~                                                                                                   |
+~                                                                                                   |
+Patch applied to cd7e3cf second commit                                                              |
   ]])
  end
 
