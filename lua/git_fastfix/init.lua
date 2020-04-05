@@ -11,17 +11,7 @@ function ShowGitLog()
   local git_log_output = vim.api.nvim_call_function('system', {'git log -n 10 --oneline'})
   local git_logs = vim.split(git_log_output, "\n")
 
-  local calculated_window_width = 1
-
-  for i, log_line in ipairs(git_logs) do
-    if string.len(log_line) > calculated_window_width then
-      calculated_window_width = string.len(log_line)
-    end
-  end
-
   vim.api.nvim_buf_set_lines(buf, 0, -1, true, git_logs)
-  local opts = { width=calculated_window_width, height=10 }
-  vim.api.nvim_win_set_config(0, opts)
   vim.api.nvim_win_set_buf(0, buf)
   vim.api.nvim_buf_set_keymap(buf, 'n', '<CR>' ,':lua FixupToTheCommit()<cr>',{})
 end
