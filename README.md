@@ -22,4 +22,11 @@ lua require'git_fastfix'
 nn <silent> <leader>gf :lua OpenGitFastFixWindow()<cr>
 ```
 
+## Development
 
+Install neovim from [source](https://github.com/neovim/neovim#install-from-source).
+Run the tests from neovim source directory. Example:
+```
+cd ~/projects/neovim
+TEST_FILE=~/projects/git_fastfix/spec/git_fastfix_spec.lua make functionaltest
+```
