@@ -22,7 +22,8 @@ describe('git_fastfix', function()
    feed('<cr>')
    command('!cd ' .. demo_path .. ' && git reset --hard HEAD')
    feed('<cr>')
-   command('luafile ' .. plugin_dir .. '/lua/git_fastfix/init.lua')
+   command('set rtp+=' .. plugin_dir)
+   command('lua git_fastfix = require("git_fastfix")')
  end)
 
  after_each(function()
@@ -41,7 +42,7 @@ describe('git_fastfix', function()
  end
 
  local function open_fixup_window()
-   command('lua OpenGitFastFixWindow()')
+   command('lua git_fastfix.open()')
  end
 
  local function expect_git_patch_window()

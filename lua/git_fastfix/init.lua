@@ -19,7 +19,7 @@ local function nvim_term_open(command)
   return nvim_call_function('termopen', { command })
 end
 
-function FixupToTheCommit()
+local function _fixup_to_commit()
   local commit_hash = split(nvim_get_current_line(), ' ')[1]
   nvim_shell_call('git commit --fixup ' .. commit_hash)
   nvim_shell_call('GIT_EDITOR=true git rebase -i --autosquash --autostash ' .. commit_hash .. '^')
@@ -27,17 +27,17 @@ function FixupToTheCommit()
   nvim_command("close")
 end
 
-function ShowGitLog()
+local function _show_git_log()
   local buf = nvim_create_buf(false, true)
-  local git_log_output = nvim_shell_call('git log -n 10 --oneline')
+  local git_log_output = nvim_shell_call('git log -n 30 --oneline')
   local git_logs = split(git_log_output, "\n")
 
   nvim_buf_set_lines(buf, 0, -1, true, git_logs)
   nvim_win_set_buf(0, buf)
-  nvim_buf_set_keymap(buf, 'n', '<CR>' ,':lua FixupToTheCommit()<cr>',{})
+  nvim_buf_set_keymap(buf, 'n', '<CR>' ,':lua git_fastfix._fixup_to_commit()<cr>',{})
 end
 
-function OpenGitFastFixWindow()
+local function open()
   local source_code_filename = nvim_buf_get_name(0)
 
   local buf = nvim_create_buf(false, true)
@@ -50,5 +50,16 @@ function OpenGitFastFixWindow()
   nvim_set_current_win(win)
   nvim_term_open('git add --patch ' .. source_code_filename)
   nvim_command('startinsert')
-  nvim_command(":autocmd TermClose <buffer> :lua ShowGitLog()")
+  nvim_command(":autocmd TermClose <buffer> :lua git_fastfix._show_git_log()")
 end
+
+function OpenGitFastFixWindow()
+  nvim_command('echom "using OpenGitFastFixWindow() was deprecated, use git_fastfix.open()"')
+  open()
+end
+
+return {
+  open = open,
+  _show_git_log = _show_git_log,
+  _fixup_to_commit = _fixup_to_commit
+}

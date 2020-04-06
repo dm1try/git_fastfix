@@ -16,10 +16,10 @@ Plug 'dm1try/git_fastfix'
 
 ```
 
-load lua module and map `OpenGitFastFixWindow()`
+load lua module and map `git_fastfix.open()`
 ```VimL
-lua require'git_fastfix'
-nn <silent> <leader>gf :lua OpenGitFastFixWindow()<cr>
+lua git_fastfix = require('git_fastfix')
+nn <silent> <leader>gf :lua git_fastfix.open()<cr>
 ```
 
 ## Development
