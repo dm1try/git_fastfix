@@ -75,8 +75,12 @@ updated^c9a08ee third commit                                                    
    ]])
  end
 
- local function choose_second_commit()
+ local function rebase_second_commit()
    feed('j<cr>')
+ end
+
+ local function fixup_second_commit()
+   feed('j\\<cr>')
  end
 
  local function expect_notification_about_applied_patch()
@@ -94,7 +98,22 @@ Patch applied to cd7e3cf second commit                                          
   ]])
  end
 
- it('applies git "fixup" for the choosen commit', function()
+ local function expect_notification_about_applied_fixup()
+  screen:expect([[
+updated^ second                                                                                      |
+~                                                                                                   |
+~                                                                                                   |
+~                                                                                                   |
+~                                                                                                   |
+~                                                                                                   |
+~                                                                                                   |
+~                                                                                                   |
+~                                                                                                   |
+Fixup applied to cd7e3cf second commit                                                              |
+  ]])
+ end
+
+ it('applies git "fixup" and "rebase" for the choosen commit', function()
     go_to_demo_project()
     update_file_from_second_commit()
 
@@ -104,7 +123,21 @@ Patch applied to cd7e3cf second commit                                          
     feed('y<cr>') -- confirm git hunk
 
     expect_git_log_window()
-    choose_second_commit()
+    rebase_second_commit()
     expect_notification_about_applied_patch()
+ end)
+
+ it('applies only a "fixup" for the choosen commit', function()
+    go_to_demo_project()
+    update_file_from_second_commit()
+
+    open_fixup_window()
+
+    expect_git_patch_window()
+    feed('y<cr>') -- confirm git hunk
+
+    expect_git_log_window()
+    fixup_second_commit()
+    expect_notification_about_applied_fixup()
  end)
 end)

@@ -19,11 +19,19 @@ local function nvim_term_open(command)
   return nvim_call_function('termopen', { command })
 end
 
-local function _fixup_to_commit()
-  local commit_hash = split(nvim_get_current_line(), ' ')[1]
+local function _fixup_to_commit(do_rebase)
+  local current_line = nvim_get_current_line()
+  local commit_hash = split(current_line, ' ')[1]
+
   nvim_shell_call('git commit --fixup ' .. commit_hash)
-  nvim_shell_call('GIT_EDITOR=true git rebase -i --autosquash --autostash ' .. commit_hash .. '^')
-  nvim_command("echo 'Patch applied to " .. nvim_get_current_line() .. "'")
+  local notification = 'Fixup applied to ' .. current_line
+
+  if do_rebase then
+    nvim_shell_call('GIT_EDITOR=true git rebase -i --autosquash --autostash ' .. commit_hash .. '^')
+    notification = 'Patch applied to ' .. current_line
+  end
+
+  nvim_command('echo "' .. notification .. '"')
   nvim_command("close")
 end
 
@@ -34,7 +42,8 @@ local function _show_git_log()
 
   nvim_buf_set_lines(buf, 0, -1, true, git_logs)
   nvim_win_set_buf(0, buf)
-  nvim_buf_set_keymap(buf, 'n', '<CR>' ,':lua git_fastfix._fixup_to_commit()<cr>',{})
+  nvim_buf_set_keymap(buf, 'n', '<CR>' ,':lua git_fastfix._fixup_to_commit(true)<cr>',{})
+  nvim_buf_set_keymap(buf, 'n', '<leader><CR>' ,':lua git_fastfix._fixup_to_commit(false)<cr>',{})
 end
 
 local function open()

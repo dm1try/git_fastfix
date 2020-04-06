@@ -22,6 +22,14 @@ lua git_fastfix = require('git_fastfix')
 nn <silent> <leader>gf :lua git_fastfix.open()<cr>
 ```
 
+## Usage
+
+Open `git_fastfix` wizard window(`:lua git_fastfix.open()`).
+Chooze git hunks for the patch.
+
+To fixup and rebase the changes press `<CR>` in the window with git logs.
+To fixup only use `<leader><CR>`.
+
 ## Development
 
 Install neovim from [source](https://github.com/neovim/neovim#install-from-source).
