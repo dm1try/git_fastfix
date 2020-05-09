@@ -31,7 +31,7 @@ function _fixup_to_commit(do_rebase)
     notification = 'Patch applied to ' .. current_line
   end
 
-  nvim_command('echo "' .. notification .. '"')
+  nvim_command('echo ' .. string.format("%q", notification))
   nvim_command("close")
 end
 
