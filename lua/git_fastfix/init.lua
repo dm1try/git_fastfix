@@ -19,7 +19,7 @@ local function nvim_term_open(command)
   return nvim_call_function('termopen', { command })
 end
 
-local function _fixup_to_commit(do_rebase)
+function _fixup_to_commit(do_rebase)
   local current_line = nvim_get_current_line()
   local commit_hash = split(current_line, ' ')[1]
 
@@ -35,15 +35,15 @@ local function _fixup_to_commit(do_rebase)
   nvim_command("close")
 end
 
-local function _show_git_log()
+function _show_git_log()
   local buf = nvim_create_buf(false, true)
   local git_log_output = nvim_shell_call('git log -n 30 --oneline')
   local git_logs = split(git_log_output, "\n")
 
   nvim_buf_set_lines(buf, 0, -1, true, git_logs)
   nvim_win_set_buf(0, buf)
-  nvim_buf_set_keymap(buf, 'n', '<CR>' ,':lua git_fastfix._fixup_to_commit(true)<cr>',{})
-  nvim_buf_set_keymap(buf, 'n', '<leader><CR>' ,':lua git_fastfix._fixup_to_commit(false)<cr>',{})
+  nvim_buf_set_keymap(buf, 'n', '<CR>' ,":lua if type(git_fastfix) == 'table' then git_fastfix._fixup_to_commit(true) else _fixup_to_commit(true) end <cr>",{})
+  nvim_buf_set_keymap(buf, 'n', '<leader><CR>' ,":lua if type(git_fastfix) == 'table' then git_fastfix._fixup_to_commit(false) else _fixup_to_commit(false) end <cr>",{})
 end
 
 local function open()
@@ -59,11 +59,11 @@ local function open()
   nvim_set_current_win(win)
   nvim_term_open('git add --patch ' .. source_code_filename)
   nvim_command('startinsert')
-  nvim_command(":autocmd TermClose <buffer> :lua git_fastfix._show_git_log()")
+  nvim_command(":autocmd TermClose <buffer> :lua if type(git_fastfix) == 'table' then git_fastfix._show_git_log() else _show_git_log() end")
 end
 
 function OpenGitFastFixWindow()
-  nvim_command('echom "using OpenGitFastFixWindow() was deprecated, use git_fastfix.open()"')
+  nvim_command('echom "using OpenGitFastFixWindow() was deprecated, use git_fastfix.open(); See README for more info"')
   open()
 end
 
